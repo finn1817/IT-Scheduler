@@ -4,30 +4,25 @@ import os
 
 def install_requirements():
     try:
-        # list of all the required packages
-        requirements = [
-            'pandas',
-            'sqlite3',
-            'tkinter',
-            'datetime'
-        ]
+        # Only pandas needs to be installed - others I had are built into Python (update)
+        requirements = ['pandas']
         
-        # installing each package
+        # install pandas
         for package in requirements:
             subprocess.check_call([sys.executable, "-m", "pip", "install", package])
         
         print("All requirements installed successfully!")
         
-        # making all the necessary directories
+        # creating all needed directories
         if not os.path.exists('data'):
             os.makedirs('data')
             
-        # creating an empty database
+        # making the empty database
         import sqlite3
         conn = sqlite3.connect('data/schedule.db')
         c = conn.cursor()
         
-        # making the workplaces table
+        # creating workplaces table
         c.execute('''CREATE TABLE IF NOT EXISTS workplaces
                     (id INTEGER PRIMARY KEY,
                      name TEXT NOT NULL,
@@ -51,7 +46,7 @@ def install_requirements():
                      end_time TEXT NOT NULL,
                      FOREIGN KEY (worker_id) REFERENCES workers(id))''')
         
-        # creating schedules table
+        # making the schedules table
         c.execute('''CREATE TABLE IF NOT EXISTS schedules
                     (id INTEGER PRIMARY KEY,
                      workplace_id INTEGER,
@@ -64,6 +59,9 @@ def install_requirements():
         
         conn.commit()
         conn.close()
+        
+        print("Database created successfully!")
+        print("Installation complete! You can now run main.py")
         
     except Exception as e:
         print(f"An error occurred during installation: {str(e)}")
